@@ -30,7 +30,7 @@ const MoviesScreen = () => {
       setLoading(true);
       try {
         const data = await requestMovies(debouncedSearch, currentPage);
-        setMovies(data.Search);
+        setMovies(prevState => [...prevState, ...data.Search]);
         setTotalResults(Number(data.totalResults) || 0);
         setError(null);
       } catch (error) {
