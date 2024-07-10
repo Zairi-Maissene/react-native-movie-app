@@ -14,6 +14,7 @@ This is a React Native application built with Expo that allows users to search f
 - Paginated search results through a large collection of movies
 - View detailed information about movies, including title, year, genre, director, actors, plot, ratings, and more
 - Responsive design suitable for mobile devices
+- Light and dark mode support
 
 ## Installation
 
