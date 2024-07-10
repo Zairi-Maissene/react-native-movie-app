@@ -2,15 +2,13 @@ import { useTheme } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { View, Image, ScrollView, StyleSheet } from 'react-native';
 import { useRoute } from '@react-navigation/native';
-import { BASE_API_URL } from '../constants/api';
 import { useLoading } from '../context/LoadingContext';
 import { Card, Divider, Chip, Rating } from 'react-native-elements';
 import { ThemedText as Text} from '../components/ThemedText';
 import { MovieDetail } from '../types/Movie';
 import { Stack } from 'expo-router';
+import { fetchMovieDetails as requestMovieDetails } from '../api';
 
-const API_KEY = process.env.EXPO_PUBLIC_MOVIES_API_KEY;
-const BASE_URL = BASE_API_URL;
 
 const DetailPage = () => {
   const route = useRoute();
@@ -24,16 +22,11 @@ const DetailPage = () => {
 
 
   useEffect(() => {
-    const fetchMovieDetail = async () => {
+    const fetchMovieDetails = async () => {
       if (!id) return;
-
       setLoading(true);
       try {
-        const response = await fetch(`${BASE_URL}?i=${id}&apikey=${API_KEY}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch movie details');
-        }
-        const data = await response.json();
+        const data = await requestMovieDetails(id);
         setMovie(data);
       } catch (error) {
         setError(error.message);
@@ -42,7 +35,7 @@ const DetailPage = () => {
       }
     };
 
-    fetchMovieDetail();
+    fetchMovieDetails();
   }, [id, setLoading]);
 
 

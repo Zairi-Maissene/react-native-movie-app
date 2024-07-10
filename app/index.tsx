@@ -5,12 +5,9 @@ import { Icon } from 'react-native-elements';
 import MovieCard from '../components/MovieCard';
 import useDebounce  from '../hooks/useDebounce';
 import { useLoading } from '../context/LoadingContext';
-import { BASE_API_URL } from '../constants/api';
 import SearchBar from '../components/ThemedSearchBar';
 import { ThemedText as Text } from '../components/ThemedText';
-
-const API_KEY = process.env.EXPO_PUBLIC_MOVIES_API_KEY;
-const BASE_URL = BASE_API_URL;
+import { fetchMovies as requestMovies } from '../api';
 
 const MoviesScreen = () => {
   const [search, setSearch] = useState('');
@@ -30,23 +27,14 @@ const MoviesScreen = () => {
         setCurrentPage(1);
         return;
       }
-
       setLoading(true);
       try {
-        const response = await fetch(`${BASE_URL}?s=${debouncedSearch}&apikey=${API_KEY}&page=${currentPage}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch movies');
-        }
-        const data = await response.json();
-        if (data.Response === 'False') {
-          throw new Error('No movies matching the search term were found.');
-        }
-        setMovies((prev) => [...prev, ...data.Search]);
+        const data = await requestMovies(debouncedSearch, currentPage);
+        setMovies(data.Search);
         setTotalResults(Number(data.totalResults) || 0);
         setError(null);
       } catch (error) {
         setError(error.message);
-        console.error('Failed to fetch movies', error);
       } finally {
         setLoading(false);
       }
